@@ -8,19 +8,408 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --bg-color: #030712;
+            --primary: #00f0ff;
+            --secondary: #7000ff;
+            --accent: #ff0055;
+            --text-color: #f3f4f6;
+            --glass-bg: rgba(15, 23, 42, 0.65);
+            --glass-border: rgba(0, 240, 255, 0.25);
+            --glow: 0 0 25px rgba(0, 240, 255, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+            perspective: 1000px;
+        }
+
+        /* Canvas Background */
+        #stars-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* 3D Floating Cyber Objects */
+        .ambient-cube {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(112, 0, 255, 0.05));
+            backdrop-filter: blur(4px);
+            z-index: -1;
+            pointer-events: none;
+            animation: float3D 12s infinite ease-in-out alternate;
+        }
+
+        .cube-1 { top: 15%; left: 8%; transform: rotateX(45deg) rotateY(20deg); }
+        .cube-2 { bottom: 20%; right: 10%; animation-delay: -6s; transform: rotateX(25deg) rotateY(60deg); }
+
+        @keyframes float3D {
+            0% { transform: translateY(0) rotateX(20deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: translateY(-40px) rotateX(60deg) rotateY(180deg) rotateZ(45deg); }
+        }
+
+        /* Grid Overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(3, 7, 18, 0) 50%, rgba(0, 0, 0, 0.5) 50%), 
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 0);
+            background-size: 100% 4px, 40px 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px var(--primary));
+        }
+
+        .version-badge {
+            font-size: 0.7rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            padding: 3px 10px;
+            border-radius: 20px;
+            color: #fff;
+            margin-left: 5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .creator-tag {
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: rgba(0, 240, 255, 0.1);
+            padding: 6px 18px;
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--glow);
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(to right, #fff, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: pulseGlow 3s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.2)); }
+            100% { filter: drop-shadow(0 0 35px rgba(112, 0, 255, 0.6)); }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.6rem);
+            max-width: 700px;
+            color: #a0aec0;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 16px 36px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.8);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            transform: translateY(-4px);
+        }
+
+        /* Features Section with 3D Cards */
+        .features {
+            padding: 100px 8%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 35px;
+            perspective: 1000px;
+        }
+
+        /* 3D Tilt Card Styling */
+        .card-wrapper {
+            perspective: 1000px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            padding: 35px;
+            border-radius: 12px;
+            transition: transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .card-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            transform: translateZ(30deg);
+        }
+
+        .card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            transform: translateZ(20deg);
+        }
+
+        .card p {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.6;
+            transform: translateZ(10deg);
+        }
+
+        /* Scroll Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px) scale(0.95);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-color);
+            border: 1px solid var(--primary);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.3);
+            position: relative;
+            transform: scale(0.8);
+            animation: popIn 0.3s forwards ease-out;
+        }
+
+        @keyframes popIn {
+            to { transform: scale(1); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 240, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header { padding: 15px 5%; }
+            .nav-links { display: none; }
+            .hero { padding-top: 100px; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- 3D Ambient Objects -->
+    <!-- 3D Ambient Cubes -->
     <div class="ambient-cube cube-1"></div>
     <div class="ambient-cube cube-2"></div>
 
     <!-- Canvas Background -->
     <canvas id="stars-canvas"></canvas>
     
-    <!-- Cyber Grid Overlay -->
+    <!-- Cyber Grid -->
     <div class="grid-overlay"></div>
 
     <!-- Navigation Header -->
@@ -43,10 +432,10 @@
         <p class="hero-subtitle reveal">High-performance custom utility framework equipped with full Execution Engine capabilities and an integrated Script Hub.</p>
         
         <div class="cta-container reveal">
-            <a href="#" class="btn btn-primary" id="download-pc">
+            <a href="#" class="btn btn-primary" onclick="triggerDownload('PC')">
                 <i class="fa-brands fa-windows"></i> Download for PC
             </a>
-            <a href="#" class="btn btn-secondary" id="download-mobile">
+            <a href="#" class="btn btn-secondary" onclick="triggerDownload('Mobile')">
                 <i class="fa-brands fa-android"></i> Download Mobile APK
             </a>
         </div>
@@ -87,7 +476,7 @@
     <!-- Download Modal -->
     <div class="modal" id="downloadModal">
         <div class="modal-content">
-            <span class="close-btn" id="modalClose">&times;</span>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
             <h2 style="font-family: 'Orbitron'; margin-bottom: 10px;" id="modalPlatform">Preparing Build...</h2>
             <p id="modalStatus" style="color: #a0aec0;">Initializing setup package...</p>
             <div class="loader"></div>
@@ -95,7 +484,115 @@
         </div>
     </div>
 
-    <!-- Custom JavaScript -->
-    <script src="script.js"></script>
+    <script>
+        /* 1. Starfield Background Particle Animation */
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        const numStars = 160;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.opacity = Math.random();
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(0, 240, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < numStars; i++) stars.push(new Star());
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+
+        /* 2. IntersectionObserver Scroll Reveal Animations */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        /* 3. Interactive 3D Card Tilt Effect */
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -15;
+                const rotateY = ((x - centerX) / centerX) * 15;
+
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+                card.style.boxShadow = `0 15px 35px rgba(0, 240, 255, 0.3)`;
+                card.style.borderColor = 'var(--primary)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                card.style.boxShadow = `none`;
+                card.style.borderColor = 'var(--glass-border)';
+            });
+        });
+
+        /* 4. Download Trigger Modal */
+        function triggerDownload(platform) {
+            const modal = document.getElementById('downloadModal');
+            const platformText = document.getElementById('modalPlatform');
+            const statusText = document.getElementById('modalStatus');
+
+            modal.style.display = 'flex';
+            platformText.innerText = `Downloading for ${platform}...`;
+            statusText.innerText = "Fetching payload release build...";
+
+            setTimeout(() => {
+                statusText.innerText = "Download Started! Check your browser downloads.";
+            }, 2000);
+        }
+
+        function closeModal() {
+            document.getElementById('downloadModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
