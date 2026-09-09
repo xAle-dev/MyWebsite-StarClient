@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Client 3.25.1 | Made by Alex</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 3D Ambient Objects -->
+    <div class="ambient-cube cube-1"></div>
+    <div class="ambient-cube cube-2"></div>
+
+    <!-- Canvas Background -->
+    <canvas id="stars-canvas"></canvas>
+    
+    <!-- Cyber Grid Overlay -->
+    <div class="grid-overlay"></div>
+
+    <!-- Navigation Header -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-code"></i> Star Client
+            <span class="version-badge">v3.25.1</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#script-hub">Script Hub</a></li>
+            <li><a href="#download">Download</a></li>
+        </ul>
+    </header>
+
+    <!-- Main Hero Section -->
+    <section class="hero" id="download">
+        <div class="creator-tag"><i class="fa-solid fa-crown"></i> Made by Alex</div>
+        <h1 class="hero-title reveal">Star Client 3.25.1</h1>
+        <p class="hero-subtitle reveal">High-performance custom utility framework equipped with full Execution Engine capabilities and an integrated Script Hub.</p>
+        
+        <div class="cta-container reveal">
+            <a href="#" class="btn btn-primary" id="download-pc">
+                <i class="fa-brands fa-windows"></i> Download for PC
+            </a>
+            <a href="#" class="btn btn-secondary" id="download-mobile">
+                <i class="fa-brands fa-android"></i> Download Mobile APK
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title reveal">Key Capabilities</h2>
+        <div class="grid">
+            <div class="card-wrapper reveal">
+                <div class="card">
+                    <i class="fa-solid fa-terminal card-icon"></i>
+                    <h3>Execution Engine</h3>
+                    <p>Run complex custom scripts seamlessly with ultra-fast compilation speeds and optimized memory handling.</p>
+                </div>
+            </div>
+            <div class="card-wrapper reveal" id="script-hub">
+                <div class="card">
+                    <i class="fa-solid fa-cubes card-icon"></i>
+                    <h3>Integrated Script Hub</h3>
+                    <p>Browse and inject curated scripts directly from the modular overlay menu with instant one-click loading.</p>
+                </div>
+            </div>
+            <div class="card-wrapper reveal">
+                <div class="card">
+                    <i class="fa-solid fa-shield-halved card-icon"></i>
+                    <h3>Stealth Architecture</h3>
+                    <p>Designed with isolated execution threads ensuring complete system stability and zero background footprint.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Star Client v3.25.1 | Designed & Developed — <strong>Made by Alex</strong></p>
+    </footer>
+
+    <!-- Download Modal -->
+    <div class="modal" id="downloadModal">
+        <div class="modal-content">
+            <span class="close-btn" id="modalClose">&times;</span>
+            <h2 style="font-family: 'Orbitron'; margin-bottom: 10px;" id="modalPlatform">Preparing Build...</h2>
+            <p id="modalStatus" style="color: #a0aec0;">Initializing setup package...</p>
+            <div class="loader"></div>
+            <p style="font-size: 0.8rem; color: var(--primary);">Star Client v3.25.1 | Made by Alex</p>
+        </div>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
